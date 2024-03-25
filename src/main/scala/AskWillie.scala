@@ -16,9 +16,11 @@ import scala.util.Sorting
         val pages: Map[String, WebPage] = mapWebPages(loadWebPages()) // completed for you
 
         // TODO: Measure the importance of each page using one of the functions in PageRank
-        val rankedPages: List[RankedWebPage] = List() // call PageRank.???? here
+        val rankings = PageRank.equal(pages)
+        val rankedPages: List[RankedWebPage] = pages.map(p => new RankedWebPage(p._2, rankings.getOrElse(p._1, 0.0))).toList // call PageRank.???? here
+// OG:  val rankedPages: List[RankedWebPage] = List()
 
-        // Get user input then perform search until ":quit" is entered
+    // Get user input then perform search until ":quit" is entered
         var query: String = ""
         var terms: List[String] = List()
         while {
@@ -30,12 +32,16 @@ import scala.util.Sorting
             terms != List(":quit")
         } do {
           // TODO: Measure the textual match of each page to these terms using one of the functions in PageSearch
-          val searchedPages: List[SearchedWebPage] = List() // call PageSearch.???? here
+          val pageSearchVals = PageSearch.count(rankedPages, terms)
+          println(pageSearchVals)
+          val searchedPages: List[SearchedWebPage] = rankedPages.zip(pageSearchVals).map(p => new SearchedWebPage(p._1, p._2)).toList // call PageSearch.???? here
+//          val searchedPages: List[SearchedWebPage] = List()
+
           // normalize the ranges for weight and textmatch on these pages
           val pageArray = SearchedWebPageNormalize.normalize(searchedPages).toArray
           // sort this array based on the chosen averaging scheme i.e.
           //    (ArithmeticOrdering || GeometricOrdering || HarmonicOrdering)
-          Sorting.quickSort(pageArray)(NameOrdering) // TODO: change this from name ordering to something else!!!
+          Sorting.quickSort(pageArray)(ArithmeticOrdering) // TODO: change this from name ordering to something else!!!
           // Print the top ranked pages in descending order
           for p <- pageArray.reverse.slice(0, 10) do println(f"${p.name}%-15s  ${p.url}")
           // print a divider to make reading the results easier

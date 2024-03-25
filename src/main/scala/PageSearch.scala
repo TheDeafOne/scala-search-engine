@@ -1,5 +1,7 @@
+import javax.management.Query
+import scala.annotation.tailrec
 import scala.math.log
-import scala.collection.parallel.CollectionConverters._
+import scala.collection.parallel.CollectionConverters.*
 
 object PageSearch {
     /**
@@ -8,7 +10,25 @@ object PageSearch {
      * @return       a list of the number of times any of the terms appeared in each page in the same order as given
      */
     def count(pages: List[RankedWebPage], query: List[String]): List[Double] = {
-        List() // TODO: implement this method and remove this stub
+
+        def countInstances(page: RankedWebPage): Double = {
+            val x = query.map(q => getMatches(page.text, q)).sum
+            println(x)
+            x
+        }
+
+        pages.map(countInstances)
+//        List() // : implement this method and remove this stub
+    }
+
+    def getMatches(str: String, keyword: String): Int = {
+        @tailrec
+        def helper(str: String, score: Int = 0): Int = {
+            str.indexOf(keyword) match
+                case -1 => score
+                case i => helper(str.substring(i+keyword.length), score+1)
+        }
+        helper(str)
     }
 
     /**
