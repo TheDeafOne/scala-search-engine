@@ -32,7 +32,7 @@ import scala.util.Sorting
             terms != List(":quit")
         } do {
           // TODO: Measure the textual match of each page to these terms using one of the functions in PageSearch
-          val pageSearchVals = PageSearch.count(rankedPages, terms)
+          val pageSearchVals = PageSearch.tfidf(rankedPages, terms)
           println(pageSearchVals)
           val searchedPages: List[SearchedWebPage] = rankedPages.zip(pageSearchVals).map(p => new SearchedWebPage(p._1, p._2)).toList // call PageSearch.???? here
 //          val searchedPages: List[SearchedWebPage] = List()
