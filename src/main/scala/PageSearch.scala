@@ -47,12 +47,8 @@ object PageSearch {
      * @return      a list of the TF-IDF score for each page in the same order given
      */
     def tfidf(pages: List[RankedWebPage], query: List[String]): List[Double] = {
-        val idfs = query.map(q => idf(pages, q)).sum
-        pages.flatMap(p => tf(List(p), query)).map(_ * idfs)
-
-//         val tfScores = tf(pages, query)
-//         val idfScores = query.map(term => (term, idf(pages, term))).toMap
-//
-//         pages.zip(tfScores).map((page, tfScore) => query.map(term => tfScore * idfScores(term)).sum)
+        val tfScores = pages.map(page => query.map(term => tf(List(page), List(term)).head))
+        val idfScores = query.map(term => idf(pages, term))
+        tfScores.map(tfScoreVector => tfScoreVector.zip(idfScores).map((tfScore, idfScore) => tfScore * idfScore).sum)
     }
 }
