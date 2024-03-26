@@ -12,9 +12,7 @@ object PageSearch {
     def count(pages: List[RankedWebPage], query: List[String]): List[Double] = {
 
         def countInstances(page: RankedWebPage): Double = {
-            val x = query.map(q => getMatches(page.text, q)).sum
-            println(x)
-            x
+            query.map(q => getMatches(page.text, q)).sum
         }
 
         pages.map(countInstances)
