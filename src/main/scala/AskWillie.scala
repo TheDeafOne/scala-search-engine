@@ -21,7 +21,7 @@ import scala.util.Sorting
         val rankings = PageRank.pagerank(pages)
         println(rankings)
 
-    val rankedPages: List[RankedWebPage] = pages.map(p => new RankedWebPage(p._2, rankings.getOrElse(p._1, 0.0))).toList // call PageRank.???? here
+        val rankedPages: List[RankedWebPage] = pages.map(p => new RankedWebPage(p._2, rankings.getOrElse(p._1, 0.0))).toList // call PageRank.???? here
 // OG:  val rankedPages: List[RankedWebPage] = List()
 
     // Get user input then perform search until ":quit" is entered

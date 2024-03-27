@@ -33,14 +33,20 @@ object PageRank {
         val walkLength = 100
         val numWalks = 1000
 
-        @tailrec
-        def kWalks(walks: Int = 0, outMap: Map[String, Double] = Map()):Map[String, Double] = {
-            if (walks >= numWalks) {
-                outMap
-            } else{
-                val walkResult = oneWalk()
-                kWalks(walks+1, outMap + (walkResult -> (outMap.getOrElse(walkResult, 0.0) + 1)))
-            }
+//        @tailrec
+//        def kWalks(walks: Int = 0, outMap: Map[String, Double] = Map()):Map[String, Double] = {
+//            println(walks)
+//            if (walks >= numWalks) {
+//                outMap
+//            } else{
+//                val walkResult = oneWalk()
+//                kWalks(walks+1, outMap + (walkResult -> (outMap.getOrElse(walkResult, 0.0) + 1)))
+//            }
+//        }
+
+        def kWalksParallelable(): Map[String, Double] = {
+            val listOfEndStrings = (0 to numWalks).map((x) => oneWalk(0, getRandPageID).toString)
+            listOfEndStrings.map((x:String) => Map(x -> 1.0)).fold(Map[String, Double]())((map,  keyString) => map + (keyString.head._1 -> (map.getOrElse(keyString.head._1, 0.0) + 1.0)))
         }
 
 
@@ -68,8 +74,9 @@ object PageRank {
             pages.toList(rand.nextInt(pages.size))._1
         }
 
-//        println(kWalks())
-        pages.map(p => (p._1, (kWalks().getOrElse(p._1, 0.0)+1)/(numWalks + pages.size)))
+//        val w = kWalks()
+        val w = kWalksParallelable()
+        pages.map(p => (p._1, (w.getOrElse(p._1, 0.0)+1)/(numWalks + pages.size)))
 //        Map() // TODO: remove this stub and implement this method
     }
 }
